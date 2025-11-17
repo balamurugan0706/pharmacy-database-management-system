@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery - Pulse Pharmacy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .delivery-form .form-group {
+            margin-bottom: 1rem;
+        }
+        .delivery-form input[type="text"],
+        .delivery-form input[type="tel"],
+        .delivery-form input[type="file"],
+        .delivery-form select,
+        .delivery-form textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        .delivery-form input:focus,
+        .delivery-form select:focus,
+        .delivery-form textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        .delivery-form label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="{{ url_for('home') }}" class="logo" aria-label="Go to Pulse Pharmacy home">
+                <span class="logo-icon">💊</span>
+                <span class="logo-text">PULSE <span class="logo-highlight">PHARMACY</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('products') }}">Products</a></li>
+                <li><a href="{{ url_for('cart') }}">Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="delivery-section">
+            <div class="delivery-container">
+                <h1>Delivery Details</h1>
+                <p>Please provide your delivery address and preferred delivery options.</p>
+
+                <form id="deliveryForm" class="delivery-form">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" maxlength="10" autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="streetAddress">Street Address</label>
+                        <input type="text" id="streetAddress" name="streetAddress" required placeholder="House/Flat No., Street Name, Area">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" required placeholder="Enter your city">
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryType">Delivery Type</label>
+                        <select id="deliveryType" name="deliveryType">
+                            <option value="standard">Standard (1-3 days) - ₹30</option>
+                            <option value="express">Express (same day) - ₹60</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <div class="payment-methods">
+                            <div class="payment-card">
+                                <div class="method-head">
+                                    <div>
+                                        <div class="title">Cash on Delivery</div>
+                                        <div class="method-desc">Pay when the order is delivered.</div>
+                                    </div>
+                                    <div>
+                                        <label><input type="radio" name="payment" value="cod" checked></label>
+                                    </div>
+                                </div>
+                                <div class="method-desc">No online payment required.</div>
+                            </div>
+
+                            <div class="payment-card">
+                                <div class="method-head">
+                                        <div>
+                                            <div class="title">Online Payment</div>
+                                            <div class="method-desc">Fast and secure online checkout</div>
+                                        </div>
+                                        <div>
+                                            <label><input type="radio" name="payment" value="paytm"></label>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:auto; display:flex; justify-content:flex-end;">
+                                        <button type="button" class="online-btn" id="paytmCardBtn">
+                                            <span class="icon">💳</span>
+                                            Pay Securely Online
+                                        </button>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Two buttons: one for COD (form submit) and one for online payment -->
+                    <div style="display:flex; gap:0.6rem; margin-top:0.8rem;">
+                        <button type="submit" class="cod-btn" id="submitBtn">
+                            <span class="cod-icon">🏠</span>
+                            Confirm & Pay on Delivery
+                        </button>
+                        <button type="button" class="submit-button" id="paytmBtn" style="display:none; background: #00a6ff;">Pay Online</button>
+                    </div>
+                </form>
+
+                <!-- Payment modal (simulated) -->
+                    <div class="modal-backdrop" id="paytmModal">
+                    <div class="modal payment-modal" role="dialog" aria-modal="true">
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div class="payment-icon">💳</div>
+                            <h3>Secure Online Payment</h3>
+                        </div>
+                        <div class="amount" id="payAmount">Amount: ₹0</div>
+                        <div class="order-details">
+                            <div class="detail-row">
+                                <span>Payment Method</span>
+                                <span>Online Payment (Secure)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Processing Time</span>
+                                <span>Instant</span>
+                            </div>
+                        </div>
+                        <div class="method-desc">Your payment is secured with industry-standard encryption.</div>
+                        <div class="actions">
+                            <button class="btn secondary" id="modalCancel">Cancel</button>
+                            <button class="online-btn" id="modalPay">
+                                <span class="icon">💳</span>
+                                Pay Securely
+                                <span style="margin-left:8px;" id="modalSpinner" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success modal (friendly) -->
+                <div class="modal-backdrop" id="successModal" style="display:none; align-items:center; justify-content:center;">
+                    <div class="success-modal" role="dialog" aria-modal="true">
+                        <div class="success-check">✓</div>
+                        <h3>Payment Successful</h3>
+                        <div class="success-text">Your payment was received via Online Payment.</div>
+                        <div class="success-sub">Thank you for ordering from Pulse Pharmacy — your order is being prepared.</div>
+                        <div class="actions" style="margin-top:1rem; justify-content:center;">
+                            <button class="btn" id="successOk">Continue Shopping</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p><a href="{{ url_for('home') }}">Pulse Pharmacy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function(){
+            const form = document.getElementById('deliveryForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const paytmBtn = document.getElementById('paytmBtn');
+            
+            
+
+            function calculateCartTotal(){
+                try{
+                    const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+                    return cart.reduce((sum, item)=> sum + (parseInt(item.price||0,10) * (item.qty||1)), 0);
+                }catch(e){ return 0; }
+            }
+
+            function updateButtons(){
+                const method = document.querySelector('input[name="payment"]:checked').value;
+                if(method === 'paytm'){
+                    submitBtn.style.display = 'none';
+                    paytmBtn.style.display = 'block';
+                } else {
+                    submitBtn.style.display = 'block';
+                    paytmBtn.style.display = 'none';
+                }
+            }
+
+            // wire up payment radio changes
+            document.querySelectorAll('input[name="payment"]').forEach(r => r.addEventListener('change', updateButtons));
+            updateButtons();
+
+            // COD flow (form submission) - will POST to /api/orders
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+                submitOrder('cod');
+            });
+
+            // Show Paytm modal when clicking the card button or the small paytm button
+            function openPaytmModal(){
+                const name = document.getElementById('fullName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const streetAddress = document.getElementById('streetAddress').value.trim();
+                const city = document.getElementById('city').value.trim();
+                
+                if(!name || !phone || !streetAddress || !city){
+                    alert('Please fill all required fields including complete address details before proceeding to payment.');
+                    return;
+                }
+                const total = calculateCartTotal();
+                const shipping = (document.getElementById('deliveryType').value === 'express') ? 60 : 30;
+                const amount = total + shipping;
+                document.getElementById('payAmount').textContent = `Amount: ₹${amount}`;
+                document.getElementById('paytmModal').style.display = 'flex';
+            }
+
+            document.getElementById('paytmCardBtn').addEventListener('click', openPaytmModal);
+            paytmBtn.addEventListener('click', openPaytmModal);
+
+            // Modal actions
+            const modal = document.getElementById('paytmModal');
+            const modalCancel = document.getElementById('modalCancel');
+            const modalPay = document.getElementById('modalPay');
+            const modalSpinner = document.getElementById('modalSpinner');
+            const successModal = document.getElementById('successModal');
+            const successOk = document.getElementById('successOk');
+
+            modalCancel.addEventListener('click', function(){ modal.style.display = 'none'; });
+
+            function showSuccessThenRedirect(){
+                // Show attractive success modal instead of alert
+                successModal.style.display = 'flex';
+            }
+
+            successOk.addEventListener('click', function(){
+                successModal.style.display = 'none';
+                // after viewing success, go home
+                window.location.href = '/home';
+            });
+
+            modalPay.addEventListener('click', function(){
+                // show spinner
+                modalSpinner.innerHTML = '<span class="spinner" aria-hidden="true"></span>';
+                modalPay.disabled = true;
+                // fake network/payment delay
+                setTimeout(()=>{
+                    // success path
+                    modalSpinner.innerHTML = '';
+                    modalPay.disabled = false;
+                    // close modal and create order (mark as paid)
+                    modal.style.display = 'none';
+                    submitOrder('paytm');
+                }, 1200);
+            });
+
+            // submitOrder handles sending data to server and showing response
+            async function submitOrder(paymentMethod){
+                const name = document.getElementById('fullName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const streetAddress = document.getElementById('streetAddress').value.trim();
+                const city = document.getElementById('city').value.trim();
+                
+                if(!name || !phone || !streetAddress || !city){
+                    alert('Please fill all required fields including complete address details.');
+                    return;
+                }
+
+                // Combine address fields into a formatted string
+                const address = `${streetAddress}, ${city}`;
+                const items = JSON.parse(localStorage.getItem('cart')||'[]').map(item => ({
+                    name: item.name,
+                    qty: item.qty || 1,
+                    price: parseInt(item.price, 10) || 0
+                }));
+                if(!items.length){
+                    alert('Your cart is empty.');
+                    return;
+                }
+
+                const deliveryType = document.getElementById('deliveryType').value;
+
+                try{
+                    const payload = { 
+                        customer_name: name, 
+                        phone, 
+                        streetAddress: streetAddress,
+                        city: city,
+                        delivery_type: deliveryType, 
+                        payment_method: paymentMethod, 
+                        items 
+                    };
+                    const resp = await fetch('/api/orders', { 
+                        method: 'POST', 
+                        headers: {'Content-Type':'application/json'}, 
+                        body: JSON.stringify(payload) 
+                    });
+
+                    if(!resp.ok){
+                        const txt = await resp.text();
+                        throw new Error(txt || 'Failed to create order');
+                    }
+                    const body = await resp.json();
+                    // clear cart and show server-confirmed order
+                    localStorage.removeItem('cart');
+                    const orderNum = body.order_id;
+                    const successHtml = `
+                        <div class="success-modal" role="dialog" aria-modal="true">
+                            <div class="cod-success-icon">✅</div>
+                            <h3>Order Confirmed!</h3>
+                            <div class="order-number">Order #${orderNum}</div>
+                            <div class="success-text">Your order has been successfully placed.</div>
+                            <div class="success-sub">We will contact you at ${phone} for delivery updates.</div>
+                                    <div class="actions" style="margin-top:1.5rem; justify-content:center;">
+                                        <button class="cod-btn" onclick="window.location.href='/home'">Return to Home</button>
+                                    </div>
+                        </div>
+                    `;
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop';
+                    backdrop.style.display = 'flex';
+                    backdrop.innerHTML = successHtml;
+                    document.body.appendChild(backdrop);
+                    backdrop.addEventListener('click', function(e) {
+                        if (e.target === backdrop) window.location.href = '/home';
+                    });
+                }catch(err){
+                    console.error(err);
+                    alert('Could not place order: '+ (err.message || err));
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

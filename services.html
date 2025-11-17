@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Pulse Pharmacy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">💊</span>
+                <span class="logo-text">PULSE <span class="logo-highlight">PHARMACY</span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('products') }}">Products</a></li>
+                <li><a href="{{ url_for('services') }}" class="active">Services</a></li>
+                <li><a href="{{ url_for('prescriptions') }}">Prescriptions</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="services-section">
+            <h1>Our Services</h1>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">💊</div>
+                    <h3>Prescription Filling</h3>
+                    <p>Quick and accurate prescription services with expert pharmacist consultation</p>
+                    <a href="{{ url_for('prescriptions') }}" class="service-button">Learn More</a>
+                    
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚚</div>
+                    <h3>Home Delivery</h3>
+                    <p>Free same-day delivery for prescriptions and other healthcare products</p>
+                    <a href="{{ url_for('delivery') }}" class="service-button">Schedule Delivery</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>📞 1-800-MEDCARE</p>
+                <p>📧 info@medcare.com</p>
+                <p>🏢 123 Health Street</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Hours</h4>
+                <p>Mon-Fri: 8:00 AM - 9:00 PM</p>
+                <p>Sat-Sun: 9:00 AM - 6:00 PM</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Pulse Pharmacy. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescriptions - Pulse Pharmacy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Inline success / error message styles used on upload feedback */
+        .success-message {
+            background: #f0fff4;
+            color: #2f855a;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(47,133,90,0.08);
+        }
+
+        .error-message {
+            background: #fff5f5;
+            color: #c53030;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(197,48,48,0.06);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">💊</span>
+                <span class="logo-text">PULSE <span class="logo-highlight">PHARMACY</span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('products') }}">Products</a></li>
+                <li><a href="{{ url_for('services') }}">Services</a></li>
+                <li><a href="{{ url_for('prescriptions') }}" class="active">Prescriptions</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="prescription-hero">
+            <div class="hero-content">
+                <h1>Prescription Services</h1>
+                <p>Fast, reliable, and professional prescription services</p>
+            </div>
+        </section>
+
+        <section class="prescriptions-section">
+            <div class="service-cards">
+                <div class="prescription-card upload-card">
+                    <!-- upload feedback message (hidden by default) -->
+                    <div id="uploadMessage" style="display:none;"></div>
+                    <div class="card-header">
+                        <div class="card-icon-wrapper">
+                            <div class="card-icon">📄</div>
+                        </div>
+                        <h3>Upload Prescription</h3>
+                        <p class="card-description">Upload your prescription securely for quick processing</p>
+                    </div>
+                    <form class="prescription-form" id="uploadForm" enctype="multipart/form-data">
+                        <div class="upload-area">
+                            <input type="file" id="prescription" name="prescription" accept=".pdf,.jpg,.jpeg,.png">
+                            <div class="upload-content">
+                                <div class="upload-icon">📤</div>
+                                <p class="upload-text">Drag & Drop Files Here</p>
+                                <p class="upload-subtext">or</p>
+                                <button type="button" class="browse-button">Browse Files</button>
+                                <p class="file-types">Supports: PDF, JPG, JPEG, PNG</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor_name">Doctor's Name</label>
+                            <input type="text" id="doctor_name" name="doctor_name" placeholder="Enter doctor's name">
+                        </div>
+                        <button type="submit" class="submit-button gradient-button">
+                            <span>Upload Prescription</span>
+                            <span class="button-icon">⬆️</span>
+                        </button>
+                    </form>
+                    
+                    <!-- Prescription History -->
+                    <div class="prescription-history">
+                        <h3>Your Prescriptions</h3>
+                        <div class="prescription-list">
+                            {% if prescriptions %}
+                                {% for prescription in prescriptions %}
+                                <div class="prescription-item">
+                                    <div class="prescription-info">
+                                        <div class="prescription-header">
+                                            <h4>Prescription #{{ prescription.prescription_number }}</h4>
+                                            <span class="prescription-status {{ prescription.status }}">{{ prescription.status }}</span>
+                                        </div>
+                                        <div class="prescription-details">
+                                            <p><strong>Uploaded:</strong> {{ prescription.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                                            {% if prescription.doctor_name %}
+                                            <p><strong>Doctor:</strong> {{ prescription.doctor_name }}</p>
+                                            {% endif %}
+                                            <!-- Notes display removed to simplify prescription view -->
+                                        </div>
+                                    </div>
+                                    <div class="prescription-actions">
+                                        <a href="{{ url_for('static', filename='prescriptions/' + prescription.filename) }}" 
+                                           target="_blank" class="view-btn">View</a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="no-prescriptions">No prescriptions uploaded yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="prescription-card refill-card">
+                    <div class="card-header">
+                        <div class="card-icon-wrapper">
+                            <div class="card-icon">🔄</div>
+                        </div>
+                        <h3>Refill Prescription</h3>
+                        <p class="card-description">Easily refill your existing prescriptions</p>
+                    </div>
+                    <form class="prescription-form">
+                        <div class="form-group">
+                            <div class="input-icon-wrapper">
+                                <span class="input-icon">🔢</span>
+                                <input type="text" placeholder="Prescription Number" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-icon-wrapper">
+                                <span class="input-icon">📱</span>
+                                <input type="tel" placeholder="Phone Number" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-button gradient-button">
+                            <span>Request Refill</span>
+                            <span class="button-icon">🔄</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Transfer card removed to simplify UI (transfer feature deprecated) -->
+            </div>
+
+            <div class="medicines-section">
+                <h2>Available Basic Medicines</h2>
+                <p class="section-subtitle">Common over-the-counter medications always in stock</p>
+                
+                <div class="medicine-categories">
+                    <div class="category-card">
+                        <h3>Pain Relief & Fever</h3>
+                        <ul class="medicine-list">
+                            <li>Paracetamol Tablets</li>
+                            <li>Ibuprofen 200mg/400mg</li>
+                            <li>Aspirin 300mg</li>
+                            <li>Naproxen Sodium</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>Cold & Flu</h3>
+                        <ul class="medicine-list">
+                            <li>Cold & Flu Tablets</li>
+                            <li>Cough Syrup</li>
+                            <li>Throat Lozenges</li>
+                            <li>Nasal Decongestant</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>Digestive Health</h3>
+                        <ul class="medicine-list">
+                            <li>Antacids</li>
+                            <li>Anti-diarrheal</li>
+                            <li>Digestive Enzymes</li>
+                            <li>Gas Relief Tablets</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>First Aid</h3>
+                        <ul class="medicine-list">
+                            <li>Antiseptic Solution</li>
+                            <li>Bandages & Gauze</li>
+                            <li>Cotton & Swabs</li>
+                            <li>Burn Cream</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>Vitamins & Supplements</h3>
+                        <ul class="medicine-list">
+                            <li>Multivitamins</li>
+                            <li>Vitamin C Tablets</li>
+                            <li>Calcium Supplements</li>
+                            <li>Iron Tablets</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>Personal Care</h3>
+                        <ul class="medicine-list">
+                            <li>Hand Sanitizer</li>
+                            <li>Face Masks</li>
+                            <li>First Aid Kits</li>
+                            <li>Thermometers</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="medicine-note">
+                    <p>⚕️ Note: Some medicines may require a prescription. Please consult our pharmacist for guidance.</p>
+                    <p>🏥 Emergency medicines are available 24/7</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>📞 1-800-MEDCARE</p>
+                <p>📧 info@medcare.com</p>
+                <p>🏢 123 Health Street</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Hours</h4>
+                <p>Mon-Fri: 8:00 AM - 9:00 PM</p>
+                <p>Sat-Sun: 9:00 AM - 6:00 PM</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Pulse Pharmacy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const msgEl = document.getElementById('uploadMessage');
+            try {
+                const response = await fetch('/api/prescriptions/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    // show server-provided error or generic message
+                    const err = (data && data.error) ? data.error : 'Upload failed';
+                    msgEl.textContent = err;
+                    msgEl.className = 'error-message';
+                    msgEl.style.display = 'block';
+                    // hide after a short delay
+                    setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+                    return;
+                }
+
+                // success: show styled message and then reload to display new prescription
+                const successText = (data && data.message) ? data.message : 'Prescription uploaded successfully';
+                msgEl.textContent = successText;
+                msgEl.className = 'success-message';
+                msgEl.style.display = 'block';
+                setTimeout(() => { window.location.reload(); }, 1200);
+
+            } catch (error) {
+                msgEl.textContent = error.message || 'Could not upload prescription';
+                msgEl.className = 'error-message';
+                msgEl.style.display = 'block';
+                setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+            }
+        });
+
+        // Make the entire upload area clickable
+        document.querySelector('.upload-area').addEventListener('click', function(e) {
+            if (e.target.tagName !== 'INPUT') {
+                document.getElementById('prescription').click();
+            }
+        });
+
+        // Show selected filename
+        document.getElementById('prescription').addEventListener('change', function(e) {
+            const filename = e.target.files[0]?.name || 'No file selected';
+            document.querySelector('.upload-text').textContent = filename;
+        });
+
+        // Handle drag and drop
+        const uploadArea = document.querySelector('.upload-area');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('highlight');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('highlight');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            document.getElementById('prescription').files = files;
+            document.querySelector('.upload-text').textContent = files[0].name;
+        }
+    </script>
+</body>
+</html>

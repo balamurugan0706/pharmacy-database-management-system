@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Pulse Pharmacy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">💊</span>
+                <span class="logo-text">PULSE <span class="logo-highlight">PHARMACY</span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('products') }}">Products</a></li>
+                <li><a href="{{ url_for('cart') }}" class="active">Cart</a></li>
+            
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="cart-section">
+            <div class="cart-container">
+                <h1>Your Cart</h1>
+                <div id="cartContent"></div>
+                <div class="cart-actions">
+                    <a href="{{ url_for('products') }}" class="btn">Continue Shopping</a>
+                    <a href="{{ url_for('orders') }}" class="btn">Check Orders</a>
+                    <a href="{{ url_for('delivery') }}" id="checkoutBtn" class="btn primary">Proceed to Delivery</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>📞 1-800-MEDCARE</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Render cart from localStorage
+        (function(){
+            const cartContent = document.getElementById('cartContent');
+            function getCart(){ try{return JSON.parse(localStorage.getItem('cart')||'[]')}catch(e){return []} }
+            function saveCart(c){ localStorage.setItem('cart', JSON.stringify(c)); }
+            function formatINR(p){ return '₹' + (p).toFixed(2); }
+
+            function render(){
+                const cart = getCart();
+                if(!cart.length){
+                    cartContent.innerHTML = '<p>Your cart is empty.</p>';
+                    document.getElementById('checkoutBtn').style.display = 'none';
+                    return;
+                }
+                document.getElementById('checkoutBtn').style.display = '';
+                let html = '<table class="cart-table"><thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead><tbody>';
+                let grand = 0;
+                cart.forEach((it, idx)=>{
+                    const total = it.price * it.qty;
+                    grand += total;
+                    html += `<tr data-idx="${idx}"><td>${it.name}</td><td>${formatINR(it.price)}</td><td><input type="number" min="1" value="${it.qty}" class="qty-input"></td><td>${formatINR(total)}</td><td><button class="remove-btn">Remove</button></td></tr>`;
+                });
+                html += `</tbody></table><div class="cart-summary"> <p>Grand Total: <strong>${formatINR(grand)}</strong></p></div>`;
+                cartContent.innerHTML = html;
+
+                // attach listeners
+                cartContent.querySelectorAll('.remove-btn').forEach(btn=>{
+                    btn.addEventListener('click', (e)=>{
+                        const idx = e.target.closest('tr').dataset.idx;
+                        const c = getCart(); c.splice(idx,1); saveCart(c); render();
+                    });
+                });
+                cartContent.querySelectorAll('.qty-input').forEach(input=>{
+                    input.addEventListener('change', (e)=>{
+                        const tr = e.target.closest('tr');
+                        const idx = tr.dataset.idx; const c = getCart();
+                        let v = parseInt(e.target.value,10); if(isNaN(v)||v<1) v=1; c[idx].qty = v; saveCart(c); render();
+                    });
+                });
+            }
+            render();
+        })();
+    </script>
+</body>
+</html>

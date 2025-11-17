@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Pulse Pharmacy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">💊</span>
+                <span class="logo-text">PULSE <span class="logo-highlight">PHARMACY</span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('products') }}">Products</a></li>
+                <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                <li><a href="{{ url_for('orders') }}" class="active">My Orders</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="orders-section">
+            <div class="orders-container">
+                <h1>My Orders</h1>
+                {% if orders %}
+                    {% for order in orders %}
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-info">
+                                    <h3>Order #{{ order.id }}</h3>
+                                    <p>Date: {{ order.created_at.strftime('%B %d, %Y') }}</p>
+                                    <p>Status: <span class="status-{{ order.status }}">{{ order.status.title() }}</span></p>
+                                </div>
+                                <div class="order-total">
+                                    <p>Total: ₹{{ order.total }}</p>
+                                    <p class="delivery-info">{{ order.delivery_type.title() }} Delivery</p>
+                                </div>
+                            </div>
+                            <div class="order-items">
+                                <h4>Items:</h4>
+                                <table class="items-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order.items %}
+                                        <tr>
+                                            <td>{{ item.product_name }}</td>
+                                            <td>{{ item.qty }}</td>
+                                            <td>₹{{ item.price }}</td>
+                                            <td>₹{{ item.qty * item.price }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="order-delivery">
+                                <h4>Delivery Address:</h4>
+                                <p>{{ order.address.recipient_name }}</p>
+                                <p>{{ order.address.street }}</p>
+                                <p>{{ order.address.city }}</p>
+                                <p>Phone: {{ order.address.phone }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-orders">
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="{{ url_for('products') }}" class="btn">Browse Products</a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>📞 1-800-MEDCARE</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

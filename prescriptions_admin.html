@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Manage Prescriptions</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div style="max-width:1100px;margin:90px auto;padding:2rem;">
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h1>Prescriptions</h1>
+      <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    </header>
+
+    <div class="prescription-list">
+      {% for p in prescriptions %}
+      <div class="prescription-item">
+        <div style="flex:1;">
+          <div class="prescription-header">
+            <h4>Prescription #{{ p.prescription_number }}</h4>
+            <span class="prescription-status {{ p.status }}">{{ p.status }}</span>
+          </div>
+          <div class="prescription-details">
+            <p><strong>User ID:</strong> {{ p.user_id }}</p>
+            <p><strong>Uploaded:</strong> {{ p.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            {% if p.doctor_name %}
+            <p><strong>Doctor:</strong> {{ p.doctor_name }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="prescription-actions">
+          <a class="view-btn" href="{{ url_for('static', filename='prescriptions/' + p.filename) }}" target="_blank">View</a>
+          <form method="POST" action="{{ url_for('admin_change_prescription_status', pid=p.id) }}">
+            <select name="status">
+              <option value="pending" {% if p.status=='pending' %}selected{% endif %}>pending</option>
+              <option value="processing" {% if p.status=='processing' %}selected{% endif %}>processing</option>
+              <option value="ready" {% if p.status=='ready' %}selected{% endif %}>ready</option>
+              <option value="completed" {% if p.status=='completed' %}selected{% endif %}>completed</option>
+              <option value="rejected" {% if p.status=='rejected' %}selected{% endif %}>rejected</option>
+            </select>
+            <button type="submit" class="btn">Update</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

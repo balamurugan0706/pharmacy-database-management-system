@@ -1,0 +1,96 @@
+*** Begin Patch
+*** Update File: c:\Users\Admin\OneDrive\Desktop\pharmacy\app.py
+@@
+     db.create_all()
+    app.run(debug=True)
+
+
+
+
++@app.route('/api/orders', methods=['POST'])
++def create_order():
++    """API endpoint for creating new orders.
++    
++    Expects JSON with:
++    - customer_name: string
++    - phone: string
++    - address: string (legacy combined format)
++    - street: string (optional)
++    - city: string (optional)
++    - delivery_type: string
++    - payment_method: string
++    - items: array of {product_id, qty}
++    """
++    try:
++        # Require authentication
++        if not session.get('user_id'):
++            return jsonify({'error': 'Please log in to place orders.'}), 401
++
++        data = request.get_json()
++        if not data:
++            return jsonify({'error': 'No data provided'}), 400
++
++        # validate required fields
++        required = ['customer_name', 'phone', 'address', 'delivery_type', 'payment_method', 'items']
++        missing = [f for f in required if not data.get(f)]
++        if missing:
++            return jsonify({'error': f'Missing required fields: {", ".join(missing)}'}), 400
++
++        if not data['items']:
++            return jsonify({'error': 'Cart is empty'}), 400
++
++        # calculate order total including delivery fee
++        items_total = sum(
++            item.get('qty', 1) * Product.query.get(item.get('product_id')).price
++            for item in data['items']
++            if Product.query.get(item.get('product_id'))
++        )
++        delivery_fee = 60 if data['delivery_type'] == 'express' else 30
++        total = items_total + delivery_fee
++
++        # create order
++        order = Order(
++            customer_name=data['customer_name'],
++            phone=data['phone'],
++            address=data['address'],  # legacy field
++            delivery_type=data['delivery_type'],
++            payment_method=data['payment_method'],
++            total=total,
++            delivery_fee=delivery_fee,
++            # split address into components if provided
++            street=data.get('street', ''),
++            city=data.get('city', ''),
++            state=data.get('state', ''),
++            postal_code=data.get('postal_code', ''),
++            country=data.get('country', ''),
++            delivery_instructions=data.get('delivery_instructions', ''),
++            # optional scheduled delivery
++            scheduled_delivery=data.get('scheduled_delivery')
++        )
++        db.session.add(order)
++
++        # add order items
++        for item in data['items']:
++            product = Product.query.get(item['product_id'])
++            if not product:
++                continue  # skip invalid products
++            qty = item.get('qty', 1)
++            order_item = OrderItem(
++                order=order,
++                product=product,
++                qty=qty,
++                price=product.price
++            )
++            db.session.add(order_item)
++
++        db.session.commit()
++        return jsonify({
++            'order_id': order.id,
++            'total': total,
++            'delivery_fee': delivery_fee
++        })
++
++    except Exception as e:
++        db.session.rollback()
++        print('Order creation failed:', str(e))
++        return jsonify({'error': 'Could not create order'}), 500

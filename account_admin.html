@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Account - Pulse Pharmacy</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div style="max-width:700px;margin:80px auto;padding:2rem;">
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h2>My Account</h2>
+      <div>
+        <a href="{{ url_for('admin_dashboard') }}">Back to dashboard</a>
+      </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="{{ category }}-message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" style="display:grid;gap:1rem;">
+      <div class="form-group">
+        <label for="current_password">Current password</label>
+        <input type="password" id="current_password" name="current_password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="new_username">New username (optional)</label>
+        <input type="text" id="new_username" name="new_username" placeholder="{{ admin.username }}">
+      </div>
+
+      <div class="form-group">
+        <label for="new_password">New password (optional)</label>
+        <input type="password" id="new_password" name="new_password">
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password">Confirm new password</label>
+        <input type="password" id="confirm_password" name="confirm_password">
+      </div>
+
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <button class="btn primary" type="submit">Update account</button>
+        <a class="btn" href="{{ url_for('admin_logout') }}">Logout</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

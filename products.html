@@ -1,0 +1,373 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Products - Pulse Pharmacy</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"></head>
+<body>
+<body><header class="header"><nav class="nav-container"><div class="logo"><span class="logo-icon">💊</span><span class="logo-text">PULSE <span class="logo-highlight">PHARMACY</span></span></div><ul class="nav-links"><li><a href="{{ url_for('home') }}">Home</a></li><li><a href="{{ url_for('products') }}" class="active">Products</a></li><li><a href="{{ url_for('services') }}">Services</a></li><li><a href="{{ url_for('prescriptions') }}">Prescriptions</a></li><li><a href="{{ url_for('cart') }}">Cart</a></li></ul></nav></header>
+
+<main><section class="products-page"><div class="products-container"><aside class="sidebar"><div class="search-bar"><input type="search" id="productSearch" placeholder="Search products..."><button id="clearSearch" title="Clear">✕</button></div><div class="pharmacy-menu"><h4>Pharmacy Lines</h4><ul id="categoryList"><li data-cat="all" class="active">All</li><li data-cat="baby">Baby Products</li><li data-cat="personal">Personal Care</li><li data-cat="otc">OTC</li><li data-cat="women">Women Care</li><li data-cat="nutrition">Nutrition & Supplements</li><li data-cat="ayurveda">Ayurveda</li></ul></div></aside>
+
+                <section class="products-content">
+                    <h1>Our Products</h1>
+                    <div class="product-grid" id="productGrid">
+                        <!-- Example products with data-category for filtering -->
+                        <div class="product-card" data-category="nutrition" data-price="600" data-name="Multivitamin Tablets">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/multivitamin.webp') }}" alt="Multivitamin Tablets">
+                            </div>
+                            <h3>Multivitamin Tablets</h3>
+                            <p class="price">₹600</p>
+                            <p class="description">Daily multivitamin for overall health</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="otc" data-price="100" data-name="Paracetamol 500mg">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/Paracetamol.webp') }}" alt="Paracetamol">
+                            </div>
+                            <h3>Paracetamol 500mg Pack of 150</h3>
+                            <p class="price">₹100</p>
+                            <p class="description">Pain & fever relief (OTC)</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="baby" data-price="400" data-name="Baby Diaper Pack">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/daiper.png') }}" alt="Baby Diaper Pack">
+                            </div>
+                            <h3>Baby Diaper Pack 0f 12</h3>
+                            <p class="price">₹400</p>
+                            <p class="description">Soft and absorbent diapers</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="personal" data-price="90" data-name="Hand Sanitizer 250ml">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/hand.jpg') }}" alt="Hand Sanitizer">
+                            </div>
+                            <h3>Hand Sanitizer 250ml</h3>
+                            <p class="price">₹90</p>
+                            <p class="description">Kills 99.9% germs</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="women" data-price="300" data-name="Feminine Care Pack">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/Fem.png') }}" alt="Feminine Care Pack">
+                            </div>
+                            <h3>Feminine Care Pack</h3>
+                            <p class="price">₹300</p>
+                            <p class="description">Comfortable daily protection</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="ayurveda" data-price="900" data-name="Ashwagandha Capsules">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/capsules.webp') }}" alt="Ashwagandha Capsules">
+                            </div>
+                            <h3>Ashwagandha Capsules</h3>
+                            <p class="price">₹900</p>
+                            <p class="description">Supports stress relief and vitality</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="nutrition" data-price="200" data-name="Vitamin C 500mg">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/vit.jpg') }}" alt="Vitamin C">
+                            </div>
+                            <h3>Vitamin C 500mg</h3>
+                            <p class="price">₹200</p>
+                            <p class="description">Immune support</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="baby" data-price="250" data-name="Baby Shampoo">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/Shampoo.webp') }}" alt="Baby Shampoo">
+                            </div>
+                            <h3>Baby Shampoo</h3>
+                            <p class="price">₹250</p>
+                            <p class="description">Gentle, tear-free formula</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="personal" data-price="300" data-name="Dental Care Kit">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/dental.jpg') }}" alt="Dental Care Kit">
+                            </div>
+                            <h3>Dental Care Kit</h3>
+                            <p class="price">₹300</p>
+                            <p class="description">Complete oral hygiene set</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="women" data-price="500" data-name="Prenatal Vitamins">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/p.jpg') }}" alt="Prenatal Vitamins">
+                            </div>
+                            <h3>Prenatal Vitamins</h3>
+                            <p class="price">₹500</p>
+                            <p class="description">Essential nutrients for pregnancy</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="ayurveda" data-price="250" data-name="Turmeric Capsules">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/t.webp') }}" alt="Turmeric Capsules">
+                            </div>
+                            <h3>Turmeric Capsules</h3>
+                            <p class="price">₹250</p>
+                            <p class="description">Natural anti-inflammatory support</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="otc" data-price="80" data-name="Antacid Tablets">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/plain.jpg') }}" alt="Antacid Tablets">
+                            </div>
+                            <h3>Antacid Tablets</h3>
+                            <p class="price">₹80</p>
+                            <p class="description">Quick acid reflux relief</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="baby" data-price="200" data-name="Baby Wipes Pack">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/w.jpg') }}" alt="Baby Wipes">
+                            </div>
+                            <h3>Baby Wipes Pack</h3>
+                            <p class="price">₹200</p>
+                            <p class="description">Gentle, alcohol-free wipes (pack of 80)</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="baby" data-price="150" data-name="Baby Powder">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/po.png') }}" alt="Baby Powder">
+                            </div>
+                            <h3>Baby Powder</h3>
+                            <p class="price">₹150</p>
+                            <p class="description">Talc-free gentle powder</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="baby" data-price="700" data-name="Baby Care Kit">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/OIP.jpeg') }}" alt="Baby Care Kit">
+                            </div>
+                            <h3>Baby Care Kit</h3>
+                            <p class="price">₹700</p>
+                            <p class="description">Complete grooming essentials kit</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="personal" data-price="200" data-name="Face Wash">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/face.png') }}" alt="Face Wash">
+                            </div>
+                            <h3>Face Wash</h3>
+                            <p class="price">₹200</p>
+                            <p class="description">Gentle daily face cleanser</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="personal" data-price="160" data-name="Deodorant">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/Deo.png') }}" alt="Deodorant">
+                            </div>
+                            <h3>Deodorant</h3>
+                            <p class="price">₹160</p>
+                            <p class="description">48-hour protection</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="personal" data-price="180" data-name="Body Wash">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/body.jpg') }}" alt="Body Wash">
+                            </div>
+                            <h3>Body Wash</h3>
+                            <p class="price">₹180</p>
+                            <p class="description">Refreshing shower gel</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="otc" data-price="150" data-name="Cold Relief Tablets">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/Cold.avif') }}" alt="Cold Relief Tablets">
+                            </div>
+                            <h3>Cold Relief Tablets</h3>
+                            <p class="price">₹150</p>
+                            <p class="description">Fast-acting cold & flu relief</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="otc" data-price="190" data-name="Allergy Relief">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/al.avif') }}" alt="Allergy Relief">
+                            </div>
+                            <h3>Allergy Relief</h3>
+                            <p class="price">₹190</p>
+                            <p class="description">24-hour allergy protection</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="otc" data-price="160" data-name="Pain Relief Gel">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/move.avif') }}" alt="Pain Relief Gel">
+                            </div>
+                            <h3>Pain Relief Gel</h3>
+                            <p class="price">₹160</p>
+                            <p class="description">Topical pain relief</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <!-- Women Care Products -->
+                        <div class="product-card" data-category="women" data-price="380" data-name="Women's Multivitamin">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/mul.jpg') }}" alt="Women's Multivitamin">
+                            </div>
+                            <h3>Women's Multivitamin</h3>
+                            <p class="price">₹380</p>
+                            <p class="description">Complete daily nutrition for women</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="women" data-price="420" data-name="Iron Supplements">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/iron.jpg') }}" alt="Iron Supplements">
+                            </div>
+                            <h3>Iron Supplements</h3>
+                            <p class="price">₹420</p>
+                            <p class="description">Support healthy iron levels</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="women" data-price="550" data-name="Calcium Plus D3">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/cal.avif') }}" alt="Calcium Plus D3">
+                            </div>
+                            <h3>Calcium Plus D3</h3>
+                            <p class="price">₹550</p>
+                            <p class="description">Bone health support</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <!-- Nutrition & Supplements -->
+                        <div class="product-card" data-category="nutrition" data-price="650" data-name="Protein Powder">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/white.jpg') }}" alt="Protein Powder">
+                            </div>
+                            <h3>Protein Powder</h3>
+                            <p class="price">₹650</p>
+                            <p class="description">High-quality whey protein blend</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="nutrition" data-price="480" data-name="Omega-3 Fish Oil">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/fish.avif') }}" alt="Omega-3 Fish Oil">
+                            </div>
+                            <h3>Omega-3 Fish Oil</h3>
+                            <p class="price">₹480</p>
+                            <p class="description">Heart and brain health support</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="nutrition" data-price="320" data-name="Zinc Complex">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/zinc.webp') }}" alt="Zinc Complex">
+                            </div>
+                            <h3>Zinc Complex</h3>
+                            <p class="price">₹320</p>
+                            <p class="description">Immune system support</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <!-- Ayurveda Products -->
+                        <div class="product-card" data-category="ayurveda" data-price="450" data-name="Triphala Powder">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/Trip.webp') }}" alt="Triphala Powder">
+                            </div>
+                            <h3>Triphala Powder</h3>
+                            <p class="price">₹450</p>
+                            <p class="description">Digestive health supplement</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="ayurveda" data-price="380" data-name="Giloy Tablets">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/gioly.webp') }}" alt="Giloy Tablets">
+                            </div>
+                            <h3>Giloy Tablets</h3>
+                            <p class="price">₹380</p>
+                            <p class="description">Immunity booster</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+
+                        <div class="product-card" data-category="ayurveda" data-price="290" data-name="Brahmi Capsules">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='image/bra.png') }}" alt="Brahmi Capsules">
+                            </div>
+                            <h3>Brahmi Capsules</h3>
+                            <p class="price">₹290</p>
+                            <p class="description">Memory and cognitive support</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <!-- Quick-buy modal -->
+        <div class="quickbuy-backdrop" id="quickbuyBackdrop">
+            <div class="quickbuy-modal" role="dialog" aria-modal="true" id="quickbuyModal">
+                <div>
+                    <img id="qbImage" src="" alt="Product image">
+                </div>
+                <div>
+                    <div class="qb-title" id="qbTitle">Product Name</div>
+                    <div class="qb-desc" id="qbDesc">Short description</div>
+                    <div class="qb-price" id="qbPrice">₹0</div>
+                    <div>
+                        <label style="font-weight:600; display:block; margin-bottom:6px;">Quantity</label>
+                        <div class="quantity-control">
+                            <button type="button" class="qty-btn" id="qtyMinus">−</button>
+                            <input type="number" id="qtyInput" class="qty-input" value="1" min="1">
+                            <button type="button" class="qty-btn" id="qtyPlus">+</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:0.8rem; color:var(--muted); font-size:0.95rem;">Total: <span id="qbTotal">₹0</span></div>
+                    <div class="qb-actions">
+                        <button class="btn add-cart" id="qbAddCart">Add to Cart</button>
+                        <button class="btn buy-now" id="qbBuyNow">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script>(()=>{const e=document.getElementById("productSearch"),t=document.getElementById("clearSearch"),n=document.getElementById("categoryList"),r=document.getElementById("productGrid"),c=Array.from(r.querySelectorAll(".product-card"));let a="all";function i(){const t=e.value.trim().toLowerCase();c.forEach(e=>{const n=e.dataset.category?e.dataset.category.toLowerCase():"",r=e.querySelector("h3").textContent.toLowerCase();e.style.display="all"===a||n.split(/\s+/).includes(a)&&(""===t||r.includes(t)||n.includes(t))?"":"none"})}e.addEventListener("input",i),t.addEventListener("click",()=>{e.value="",i(),e.focus()}),n.addEventListener("click",e=>{const t=e.target.closest("li");if(!t)return;const r=t.dataset.cat;n.querySelectorAll("li").forEach(e=>e.classList.remove("active")),t.classList.add("active"),a=r||"all",i()});const o=document.getElementById("quickbuyBackdrop"),d=document.getElementById("qbImage"),l=document.getElementById("qbTitle"),s=document.getElementById("qbDesc"),u=document.getElementById("qbPrice"),m=document.getElementById("qbTotal"),p=document.getElementById("qtyInput"),y=document.getElementById("qtyMinus"),v=document.getElementById("qtyPlus"),b=document.getElementById("qbAddCart"),f=document.getElementById("qbBuyNow");let g=null;function h(){const e=Math.max(1,parseInt(p.value||"1",10)),t=(parseInt(g.price||0,10)*e)||0;m.textContent="₹"+t}function q(e){try{return JSON.parse(localStorage.getItem(e)||"[]")}catch(e){return[]}}function k(e){localStorage.setItem("cart",JSON.stringify(e))}y.addEventListener("click",()=>{p.value=Math.max(1,parseInt(p.value||"1",10)-1),h()}),v.addEventListener("click",()=>{p.value=Math.max(1,parseInt(p.value||"1",10)+1),h()}),p.addEventListener("input",()=>{p.value&&parseInt(p.value||"0",10)>=1||(p.value=1),h()}),b.addEventListener("click",()=>{const e=Math.max(1,parseInt(p.value||"1",10));!function(e){const t=q("cart"),n=t.find(t=>t.name===e.name);n?n.qty=(n.qty||0)+(e.qty||1):t.push(e),k(t)}({name:g.name,price:parseInt(g.price||0,10),qty:e}),b.textContent="Added ✓",setTimeout(()=>b.textContent="Add to Cart",1100),o.style.display="none",g=null}),f.addEventListener("click",()=>{const e=Math.max(1,parseInt(p.value||"1",10)),t={name:g.name,price:parseInt(g.price||0,10),qty:e},n=q("cart");n.find(e=>e.name===t.name)?n.find(e=>e.name===t.name).qty=(n.find(e=>e.name===t.name).qty||0)+t.qty:n.push(t),k(n),window.location.href="/delivery"}),o.addEventListener("click",e=>{e.target===o&&(o.style.display="none",g=null)}),c.forEach(e=>{e.querySelector(".add-to-cart").addEventListener("click",()=>{const t=e.dataset.name||e.querySelector("h3").textContent.trim(),n=parseInt(e.dataset.price||"0",10),r=e.querySelector("img"),c=r?r.src:"",a=e.querySelector(".description"),i=a?a.textContent.trim():"";g={name:t,price:n,img:c,desc:i},d.src=g.img||"",l.textContent=g.name,s.textContent=g.desc||"",u.textContent="₹"+g.price.toString(),p.value=1,h(),o.style.display="flex"})}),i()})();</script>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>📞 1-800-MEDCARE</p>
+                <p>📧 info@medcare.com</p>
+                <p>🏢 123 Health Street</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Hours</h4>
+                <p>Mon-Fri: 8:00 AM - 9:00 PM</p>
+                <p>Sat-Sun: 9:00 AM - 6:00 PM</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Pulse Pharmacy. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

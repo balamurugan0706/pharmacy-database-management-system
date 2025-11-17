@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Manage Products</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div style="max-width:1100px;margin:90px auto;padding:2rem;">
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h1>Products</h1>
+      <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    </header>
+
+    <section style="margin-bottom:1.5rem;">
+      <h3>Create product</h3>
+      <form method="POST" action="{{ url_for('admin_create_product') }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+        <input name="name" placeholder="Name" required>
+        <input name="category" placeholder="Category">
+        <input name="price" placeholder="Price" type="number">
+        <input name="stock" placeholder="Stock" type="number">
+        <button class="btn primary" type="submit">Create</button>
+      </form>
+    </section>
+
+    <section>
+      <h3>Existing products</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-top:1rem;">
+        {% for p in products %}
+        <div class="product-card" style="padding:1rem;">
+          <h4>{{ p.name }}</h4>
+          <p class="text-muted">Category: {{ p.category }}</p>
+          <p><strong>Price:</strong> {{ p.price }} | <strong>Stock:</strong> {{ p.stock }}</p>
+          <form method="POST" action="{{ url_for('admin_update_product', pid=p.id) }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;margin-top:0.5rem;">
+            <input name="name" value="{{ p.name }}">
+            <input name="category" value="{{ p.category }}">
+            <input name="price" type="number" value="{{ p.price }}">
+            <input name="stock" type="number" value="{{ p.stock }}">
+            <label style="display:flex;align-items:center;gap:0.4rem;"><input type="checkbox" name="is_active" value="1" {% if p.is_active %}checked{% endif %}> Active</label>
+            <button class="btn" type="submit">Update</button>
+          </form>
+          <form method="POST" action="{{ url_for('admin_delete_product', pid=p.id) }}" style="margin-top:0.5rem;">
+            <button class="btn" type="submit">Delete</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Manage Orders</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div style="max-width:1100px;margin:90px auto;padding:2rem;">
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h1>Orders</h1>
+      <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    </header>
+
+    <div>
+      {% for o in orders %}
+      <div class="order-confirmation-box" style="margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <h4>Order #{{ o.id }}</h4>
+            <p class="text-muted">Placed: {{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p><strong>Total:</strong> {{ o.total }}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;align-items:flex-end;">
+            <form method="POST" action="{{ url_for('admin_change_order_status', oid=o.id) }}">
+              <select name="status">
+                <option value="pending" {% if o.status=='pending' %}selected{% endif %}>pending</option>
+                <option value="delivered" {% if o.status=='delivered' %}selected{% endif %}>delivered</option>
+                <option value="cancelled" {% if o.status=='cancelled' %}selected{% endif %}>cancelled</option>
+              </select>
+              <button class="btn" type="submit">Update</button>
+            </form>
+            <button class="btn view-order-btn" data-order-id="{{ o.id }}">View Details</button>
+          </div>
+        </div>
+      </div>
+      <!-- Hidden order details block (used by modal) -->
+      <div id="order-details-{{ o.id }}" class="hidden-order-details" style="display:none;">
+        <div class="order-header">
+          <h3>Order #{{ o.id }}</h3>
+          <div class="order-meta">Placed: {{ o.created_at.strftime('%Y-%m-%d %H:%M') }} • Total: ₹{{ o.total }}</div>
+        </div>
+        <div style="margin-top:0.6rem;">
+          <form class="status-form" data-oid="{{ o.id }}">
+            <label style="font-weight:600;">Status</label>
+            <select name="status" style="margin-bottom:0.6rem;padding:0.4rem;border-radius:6px;border:1px solid #ddd;">
+              <option value="pending" {% if o.status=='pending' %}selected{% endif %}>pending</option>
+              <option value="delivered" {% if o.status=='delivered' %}selected{% endif %}>delivered</option>
+              <option value="cancelled" {% if o.status=='cancelled' %}selected{% endif %}>cancelled</option>
+            </select>
+            <div><button type="button" class="btn status-submit" style="margin-left:0;">Save Status</button>
+            <span class="status-message" style="margin-left:0.6rem;color:#2f855a;display:none;"></span></div>
+          </form>
+        </div>
+
+        <hr style="margin:0.9rem 0; border:none; border-top:1px solid #eef2f6;">
+
+        <h4>Delivery Address</h4>
+        {% if o.address %}
+          <p style="line-height:1.4;">{{ o.address.recipient_name }}<br>{{ o.address.phone }}<br>{{ o.address.street }}, {{ o.address.city }}</p>
+        {% else %}
+          <p>Address not available</p>
+        {% endif %}
+
+        <h4 style="margin-top:0.8rem;">Items</h4>
+        <ul style="padding-left:1.1rem;">
+          {% for item in o.items %}
+            <li class="order-item-row" data-item-id="{{ item.id }}" style="margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center;">
+              <div style="flex:1;">{{ item.product_name }}</div>
+              <div style="display:flex;gap:0.5rem;align-items:center;">
+                <button class="qty-decrease" data-item-id="{{ item.id }}" style="padding:4px 8px;border-radius:6px;border:1px solid #e2e8f0;background:#fff;">−</button>
+                <input class="qty-input" data-item-id="{{ item.id }}" type="number" value="{{ item.qty }}" min="1" style="width:56px;padding:6px;border-radius:6px;border:1px solid #e2e8f0;text-align:center;">
+                <button class="qty-increase" data-item-id="{{ item.id }}" style="padding:4px 8px;border-radius:6px;border:1px solid #e2e8f0;background:#fff;">+</button>
+                <span class="item-subtotal" data-item-id="{{ item.id }}">₹{{ item.price * item.qty }}</span>
+                <button class="btn remove-item" data-item-id="{{ item.id }}" style="background:#e53e3e;padding:6px 8px;border-radius:6px;">Remove</button>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Order details modal -->
+    <div id="orderModal" class="order-modal" style="display:none; position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:1100;">
+      <div class="order-modal-card" style="background:#fff;max-width:720px;width:92%;padding:1.2rem;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.24);border:1px solid rgba(20,39,78,0.04);">
+        <div id="orderModalContent"></div>
+        <div style="text-align:right;margin-top:1rem;"><button id="closeOrderModal" class="btn">Close</button></div>
+      </div>
+    </div>
+
+    <style>
+      /* Modal styling */
+      .order-header h3 { margin:0; font-size:1.25rem; }
+      .order-header .order-meta { color:#4a5568; font-size:0.95rem; margin-top:0.35rem; }
+      .order-modal-card { padding:1.2rem; }
+      .btn { background:#2b6cb0; color:#fff; border:none; padding:0.45rem 0.8rem; border-radius:6px; cursor:pointer; }
+      .btn:hover{ opacity:0.95 }
+      .status-submit{ background:#38a169 }
+      .status-message{ font-size:0.95rem }
+    </style>
+  </div>
+  <script>
+    (function(){
+      const modal = document.getElementById('orderModal');
+      const modalContent = document.getElementById('orderModalContent');
+      const closeBtn = document.getElementById('closeOrderModal');
+
+      function openModalWithId(id){
+        const details = document.getElementById('order-details-'+id);
+        if(!details){ modalContent.innerHTML = '<p>Order details not found.</p>'; modal.style.display='flex'; return; }
+        modalContent.innerHTML = details.innerHTML;
+
+        // attach status form handler inside modal
+        const form = modalContent.querySelector('.status-form');
+        if(form){
+          const oid = form.dataset.oid;
+          const submitBtn = form.querySelector('.status-submit');
+          const statusMessage = form.querySelector('.status-message');
+          submitBtn.addEventListener('click', async function(){
+            const sel = form.querySelector('select[name="status"]');
+            const status = sel.value;
+            try{
+              const fd = new FormData(); fd.append('status', status);
+              const resp = await fetch(`/admin/orders/${oid}/status`, { method:'POST', body: fd });
+              if(!resp.ok) throw new Error('Failed');
+              // update select in the list (if present)
+              const listSelect = document.querySelector(`form[action$="/${oid}/status"] select[name="status"]`);
+              if(listSelect) listSelect.value = status;
+              statusMessage.style.display = 'inline';
+              statusMessage.textContent = 'Saved';
+              setTimeout(()=> statusMessage.style.display='none', 2200);
+            }catch(err){
+              statusMessage.style.display = 'inline';
+              statusMessage.style.color = '#e53e3e';
+              statusMessage.textContent = 'Error';
+              setTimeout(()=>{ statusMessage.style.display='none'; statusMessage.style.color='#2f855a'; }, 2200);
+            }
+          });
+        }
+
+        modal.style.display = 'flex';
+      }
+
+      document.querySelectorAll('.view-order-btn').forEach(btn=> btn.addEventListener('click', function(){ openModalWithId(this.dataset.orderId); }));
+
+      closeBtn.addEventListener('click', function(){ modal.style.display='none'; });
+      modal.addEventListener('click', function(e){ if(e.target===modal) modal.style.display='none'; });
+    })();
+  </script>
+</body>
+</html>

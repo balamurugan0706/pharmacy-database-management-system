@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Dashboard - Pulse Pharmacy</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div style="max-width:1100px;margin:90px auto;padding:2rem;">
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h1>Admin Dashboard</h1>
+      <div>
+        <span>Welcome, {{ session.get('admin_name') }}</span>
+        <a href="{{ url_for('admin_logout') }}" style="margin-left:1rem;">Logout</a>
+      </div>
+    </header>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;">
+      <div class="order-confirmation-box">
+        <h3>Total prescriptions</h3>
+        <div class="order-number">{{ total_prescriptions }}</div>
+        <p class="text-muted">Pending: {{ pending_prescriptions }}</p>
+      </div>
+
+      <div class="order-confirmation-box">
+        <h3>Total orders</h3>
+        <div class="order-number">{{ total_orders }}</div>
+      </div>
+
+      <div class="order-confirmation-box">
+        <h3>Total products</h3>
+        <div class="order-number">{{ total_products }}</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      <a class="btn primary" href="{{ url_for('admin_prescriptions') }}">Manage Prescriptions</a>
+      <a class="btn primary" href="{{ url_for('admin_orders') }}">Manage Orders</a>
+      <a class="btn primary" href="{{ url_for('admin_products') }}">Manage Products</a>
+      <a class="btn" href="{{ url_for('admin_account') }}">My Account</a>
+    </div>
+  </div>
+</body>
+</html>
